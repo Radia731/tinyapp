@@ -1,6 +1,9 @@
+
 const express = require("express");
 const app = express();
 const PORT = 7777; // default port 8080
+
+app.set("view engine", "ejs") //tells the Express app to use EJS as its templating engine
 
 
 app.get("/hello", (req, res) => {
@@ -12,7 +15,7 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
-app.get("/", (req, res) => {
+app.get("/", (req, res) => {  // setting the routes 
   res.send("Hello!");
 });
 

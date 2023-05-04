@@ -15,7 +15,7 @@ app.get("/hello", (req, res) => {
     });
 
 app.get("/urls", (req, res) => { // setting routes
-    res.json(urlDatabase);
+    res.send(urlDatabase);
   });
   
 app.get("/urls/:id", (req, res) => {

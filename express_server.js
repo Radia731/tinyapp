@@ -54,7 +54,21 @@ app.post("/urls", (req, res) => {
       res.status(404).send("Short URL not found");
     }
   });
-  
+
+  app.post('/urls/:id/delete', (req, res) => { //  ->  redirect the user to the '/urls' path, which will show the updated list of URLs after the resource has been deleted.
+
+
+    delete urlDatabase[id];
+    res.redirect('/urls');
+  });
+   
+  app.post("/urls/:id", (req, res) => {
+    const shortURL = req.params.id;
+    const longURL = req.body.longURL;
+    urlDatabase[shortURL] = longURL;
+    res.redirect("/urls");
+  });
+
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port:`, PORT);

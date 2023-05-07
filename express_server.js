@@ -23,8 +23,10 @@ app.get("/hello", (req, res) => {
     res.send("<html><body>Hello <b>World</b></body></html>\n");
     });
 
-app.get("/urls", (req, res) => { // setting routes
-    res.send(urlDatabase);
+app.get("/urls", (req, res) => { //0
+    const templateVars = { urls: urlDatabase }
+    res.render("urls_index", templateVars);
+
   });
 
 app.get("/urls/new", (req, res) => {

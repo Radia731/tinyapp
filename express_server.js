@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const PORT = 7777; // default port 7777
+const PORT = 8999; // default port 8999
 
 const cookieParser = require('cookie-parser');
 app.use(cookieParser());
@@ -10,7 +10,7 @@ app.use(express.urlencoded({ extended: true }));
 
 const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
+  "9sm5xK": "http://www.google.com",
 };
 
 function generateRandomString() {
@@ -26,11 +26,14 @@ app.get("/hello", (req, res) => {
   res.send("<html><body>Hello <b>World</b></body></html>\n");
 });
 
-app.get("/urls", (req, res) => { //0
-    const templateVars = { urls: urlDatabase }
-    res.render("urls_index", templateVars);
+app.get("/urls", (req, res) => {
+  const templateVars = {
+    urls: urlDatabase,
+    username: req.cookies.username
+  };
+  res.render("urls_index", templateVars);
+});
 
-  });
 app.get("/urls/new", (req, res) => {
   const templateVars = {
     username: req.cookies["username"]
@@ -66,6 +69,7 @@ app.post("/urls/:shortURL", (req, res) => {
   urlDatabase[req.params.shortURL] = req.body.longURL;
   res.redirect("/urls");
 });
+
 
 app.post("/login", (req, res) => {
   const { username } = req.body;

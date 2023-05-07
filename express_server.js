@@ -70,7 +70,13 @@ app.post("/urls", (req, res) => {
     urlDatabase[shortURL] = longURL;
     res.redirect("/urls");
   });
-
+  
+  app.post('/login', (req, res) => {
+    const { username } = req.body;
+    res.cookie('username', username);
+    res.redirect('/urls');
+  });
+  
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port:`, PORT);

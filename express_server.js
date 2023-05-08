@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 const PORT = 8999; // default port 8999
+const PORT = 8999; // default port 8999
 
 const cookieParser = require('cookie-parser');
 app.use(cookieParser());
@@ -78,7 +79,6 @@ app.post("/urls/:shortURL", (req, res) => {
   urlDatabase[req.params.shortURL] = req.body.longURL;
   res.redirect("/urls");
 });
-
 
 app.post("/login", (req, res) => {
   const { username } = req.body;

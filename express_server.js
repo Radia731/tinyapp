@@ -1,7 +1,7 @@
 const express = require("express");
 const bcrypt = require('bcrypt');
 const app = express();
-const PORT = 8999; // default port 8999
+const PORT = 8999; // default port 7777
 
 const cookieParser = require('cookie-parser');
 app.use(cookieParser());
@@ -12,6 +12,19 @@ app.use(express.urlencoded({ extended: true }));
 const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com",
+};
+
+const users = {
+  userRandomID: {
+    id: "userRandomID",
+    email: "user@example.com",
+    password: "purple-monkey-dinosaur",
+  },
+  user2RandomID: {
+    id: "user2RandomID",
+    email: "user2@example.com",
+    password: "dishwasher-funk",
+  },
 };
 
 function generateRandomString() {
@@ -28,23 +41,8 @@ app.get("/hello", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
-  const templateVars = {
-    urls: urlDatabase,
-    username: req.cookies.username
-  };
-  res.render("urls_index", templateVars);
-});
-
-app.get("/urls/:id", (req, res) => {
-  const templateVars = { 
-    username: req.cookies.username,
-    id: req.params.id, 
-    longURL: urlDatabase[req.params.id] 
-  };
-  res.render("urls_show", templateVars);
-});
-
-app.get("/urls/new", (req, res) => {
+  const userId = req.cookies.user_id;
+  const user = users[userId];
   const templateVars = {
     urls: urlDatabase,
     username: req.cookies.username,
@@ -123,6 +121,75 @@ app.post("/urls/:shortURL/delete", (req, res) => {
 app.post("/urls/:shortURL", (req, res) => {
   urlDatabase[req.params.shortURL] = req.body.longURL;
   res.redirect("/urls");
+});
+
+app.get("/register", (req, res) => {
+  const userId = req.cookies.user_id;
+  const user = users[userId]
+  if (user) { // logged in user 
+    res.redirect('/urls');
+  } else { 
+    const templateVars = {
+      user
+    };
+    res.render('Register', templateVars);
+  }
+});
+
+
+
+app.post("/register", (req, res) => {
+  const { email, password } = req.body;
+  if (!email || !password) {
+    res.status(400).send("Email and password fields are required.");
+    return;
+  }
+
+  // check if email already exists
+  const existingUser = findUserByEmail(email, users);
+  if (existingUser) {
+    res.status(400).send("Account already exists.");
+    return;
+  }
+
+  const id = generateRandomString();
+  const newUser = {
+    id,
+    email,
+    password: bcrypt.hashSync(password, 10),
+  };
+  users[id] = newUser;
+
+  res.cookie("user_id", id);
+  res.redirect("/urls");
+});
+
+function findUserByEmail(email, users) {
+  for (const userId in users) {
+    const user = users[userId];
+    if (user.email === email) {
+      return user;
+    }
+  }
+  return null;
+}
+
+function generateRandomString() {
+  return Math.random().toString(36).substr(2, 6);
+}
+
+
+app.get('/login', (req, res) => {
+  const userId = req.cookies.user_id;
+  const user = users[userId]
+  if (user) { // logged in user 
+    res.redirect('/urls');
+  } else { 
+    const templateVars = {
+      user
+    };
+    res.render('login', templateVars);
+  }
 });
 
 

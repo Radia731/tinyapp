@@ -124,8 +124,18 @@ app.post("/urls/:shortURL", (req, res) => {
 });
 
 app.get("/register", (req, res) => {
-  res.render("register");
+  const userId = req.cookies.user_id;
+  const user = users[userId]
+  if (user) { // logged in user 
+    res.redirect('/urls');
+  } else { 
+    const templateVars = {
+      user
+    };
+    res.render('Register', templateVars);
+  }
 });
+
 
 
 app.post("/register", (req, res) => {
@@ -170,7 +180,16 @@ function generateRandomString() {
 
 
 app.get('/login', (req, res) => {
-  res.render('login');
+  const userId = req.cookies.user_id;
+  const user = users[userId]
+  if (user) { // logged in user 
+    res.redirect('/urls');
+  } else { 
+    const templateVars = {
+      user
+    };
+    res.render('login', templateVars);
+  }
 });
 
 

@@ -50,7 +50,7 @@ const users = {
   },
 };
 
-///////////error messages ///////////////
+///////////defining error messages  ///////////////
 
 const emailBlank = 'Please enter your email.';
 const emailConflict = 'Email already exist!';
@@ -80,7 +80,7 @@ function requireLogin(req, res, next) {
 
 let cookieID;
 
-// Check both user and password, if match on post return to true.
+//////////////////authentication //////////////////
 const checkAuth = (email, pass) => {
   for (const user in users) {
     if (email === users[user].email && bcrypt.compareSync(pass, users[user].password)) {

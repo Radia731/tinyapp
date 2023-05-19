@@ -50,7 +50,7 @@ const users = {
   },
 };
 
-///////////error messages ///////////////
+///////////defining error messages  ///////////////
 
 const emailBlank = 'Please enter your email.';
 const emailConflict = 'Email already exist!';
@@ -77,6 +77,20 @@ function requireLogin(req, res, next) {
     next();
   }
 }
+
+let cookieID;
+
+//////////////////authentication //////////////////
+const checkAuth = (email, pass) => {
+  for (const user in users) {
+    if (email === users[user].email && bcrypt.compareSync(pass, users[user].password)) {
+      cookieID = users[user].id;
+      return true;
+    }
+  }
+  return false;
+};
+
 
 app.get("/hello", (req, res) => {
   res.send("<html><body>Hello <b>World</b></body></html>\n");
